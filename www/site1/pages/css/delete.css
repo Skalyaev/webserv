@@ -2,10 +2,10 @@
 
 /*------ID------------------------*/
 #main {
-	transform: translate(-50%, -65%);
+        transform: translate(-50%, -65%);
 }
 
 #title-form {
-	margin-top: 20px;
-	margin-bottom: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
 }

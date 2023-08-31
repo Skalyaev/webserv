@@ -1,75 +1,55 @@
-NAME				=	webserv
-SRCSDIR				=	srcs
-OBJSDIR				=	objs
-INCLUDESDIR			=	includes
-OBJS_SUBDIR			=	$(shell find $(SRCSDIR) -type d | grep '/' | sed 's/srcs/objs/g')
-CFLAGS				=	-Wall -Wextra -Werror -std=c++98 -g
-CC					=	c++
-RM					=	rm -rf
+NAME		= webserv
 
-SRCS				=	$(shell find $(SRCSDIR) -type f -name "*.cpp")
-SRCS_COUNT			=	$(shell find $(SRCSDIR) -type f -name "*.cpp" | wc -l)
-OBJS				=	$(subst $(SRCSDIR),$(OBJSDIR),$(SRCS:.cpp=.o))
-HEADERS				=	$(shell find $(INCLUDESDIR) -type f -name "*.hpp")
-HEADERS_COUNT		=	$(shell find $(INCLUDESDIR) -type f -name "*.hpp" | wc -l)
+CC		= c++
+CFLAGS		= -Wall -Wextra -Werror -std=c++98 -g
 
-INDEX				=	0
-BUILD_SIZE			=	$(SRCS_COUNT)
+INCLUDE_DIR	= include
+HEADER_EXT	= hpp
+HEADER		= $(shell find $(INCLUDE_DIR) -type f -name "*.$(HEADER_EXT)")
+HEADER_COUNT	= $(shell find $(INCLUDE_DIR) -type f -name "*.$(HEADER_EXT)" | wc -l)
 
-_STOP				=	\e[0m
-_GREEN				=	\e[92m
-CLEAR				=	'	                                                     \r'
-FULL				=	-->[$(_GREEN)===================================$(_STOP)]<--[ $(_GREEN)100%$(_STOP) ]
+SRC_DIR		= src
+SRC_EXT		= cpp
+SRC_COUNT	= $(shell find $(SRC_DIR) -type f -name "*.$(SRC_EXT)" | wc -l)
+SRC		= $(shell find $(SRC_DIR) -type f -name "*.$(SRC_EXT)")
 
-define update_bar	=
-	BAR				=	-->[$(_GREEN)$(shell printf "%0.s=" $$(seq 0 $(shell echo "$(INDEX) * 33 / $(BUILD_SIZE)" | bc)))$(shell printf "%0.s " $$(seq $(shell echo "$(INDEX) * 33 / $(BUILD_SIZE)" | bc) 33))$(_STOP)]<--[ $(_GREEN)$(shell echo "$(shell echo "$(INDEX) * 33 / $(BUILD_SIZE)" | bc) * 3" | bc)%$(_STOP) ]
-endef
+OBJ_DIR		= obj
+OBJ_SUBDIR	= $(shell find $(SRC_DIR) -type d | grep '/' | sed 's/$(SRC_DIR)/$(OBJ_DIR)/g')
+OBJ		= $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC:.$(SRC_EXT)=.o))
 
-#--------------------------------------------------------->>
+RM		= rm -rf
 
-all					:	$(NAME)
+all		: ${NAME}
 
-ifeq ($(HEADERS_COUNT), 1)
-ifeq ($(SRCS_COUNT), 12)
-$(NAME)				:	$(OBJSDIR) $(OBJS_SUBDIR) $(OBJS)
-						@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-						@echo -ne $(CLEAR)
-						@echo -e '	$(NAME) $(_GREEN)created$(_STOP).'
-						@echo -e '	$(FULL)'
+ifeq ($(HEADER_COUNT), 1)
+ifeq ($(SRC_COUNT), 12)
+${NAME}		: $(OBJ_DIR) $(OBJ_SUBDIR) ${OBJ}
+		${CC} ${CFLAGS} ${OBJ} -o ${NAME}
 else
-$(NAME)				:
-						@echo "Srcs corrupted, aborting"
+$(NAME)		:
+		@echo "Srcs corrupted, aborting"
 endif
 else
-$(NAME)				:
-						@echo "Srcs corrupted, aborting"
+$(NAME)		:
+		@echo "Srcs corrupted, aborting"
 endif
 
-$(OBJSDIR)			:
-						@mkdir $(OBJSDIR)
+$(OBJ_DIR)	:
+		@mkdir $(OBJ_DIR)
 
-$(OBJS_SUBDIR)		:
-						@mkdir $(OBJS_SUBDIR)
+$(OBJ_SUBDIR)	:
+		@mkdir $(OBJ_SUBDIR)
 
-$(OBJSDIR)/%.o		:	$(SRCSDIR)/%.cpp $(HEADERS)
-						@$(CC) $(CFLAGS) -c $< -o $(<:.cpp=.o)
-						@mv $(SRCSDIR)/*/*.o $@
-						@$(eval INDEX=$(shell echo $$(($(INDEX)+1))))
-						@$(eval $(call update_bar))
-						@echo -ne $(CLEAR)
-						@echo -e '	$@ $(_GREEN)created$(_STOP).'
-						@echo -ne '	$(BAR)\r'
+$(OBJ_DIR)/%.o	: $(SRC_DIR)/%.$(SRC_EXT)
+		$(CC) $(CFLAGS) -c $< -o $(<:.$(SRC_EXT)=.o)
+		@mv $(SRC_DIR)/*/*.o $@
 
-clean				:
-						@$(RM) $(OBJSDIR)
-						@echo -ne $(CLEAR)
-						@echo -e '	objs directory $(_GREEN)removed$(_STOP).'
+clean		:
+		${RM} ${OBJ_DIR}
 
-fclean				:	clean
-						@$(RM) $(NAME)
-						@echo -ne $(CLEAR)
-						@echo -e '	$(NAME) $(_GREEN)removed$(_STOP).'
+fclean		: clean
+		${RM} ${NAME}
 
-re					:	fclean all
+re		: fclean all
 
-.PHONY				:	all clean fclean re
+.PHONY		: all bonus clean fclean re

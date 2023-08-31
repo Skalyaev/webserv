@@ -83,96 +83,76 @@ typedef struct timeval t_timeval;
 // --------------------------------------------------
 
 // Données d'un bloc location
-typedef struct s_location
-{
-	bool autoIndex;
-	std::string name;
-	std::string root;
-	std::pair< short, std::string > redirect;
-	std::map< const std::string, std::vector< std::pair< const uint32_t, const bool > > >
-		limitExcept;
-	std::vector< std::string > indexPage;
-	std::vector< struct s_location > locations;
-	std::string cgiPath;
+typedef struct s_location {
+        bool autoIndex;
+        std::string name;
+        std::string root;
+        std::pair< short, std::string > redirect;
+        std::map< std::string, std::vector< std::pair< uint32_t, bool > > > limitExcept;
+        std::vector< std::string > indexPage;
+        std::vector< struct s_location > locations;
+        std::string cgiPath;
 } t_location;
 
 // Données d'un bloc serveur
-typedef struct s_serv
-{
-	int maxBodySize;
-	std::vector< std::pair< const uint32_t, const uint16_t > > ip_port;
-	std::vector< std::string > serverName;
-	std::map< const unsigned short, const std::string > errorPages;
-	std::vector< t_location > locations;
+typedef struct s_serv {
+        int maxBodySize;
+        std::vector< std::pair< uint32_t, uint16_t > > ip_port;
+        std::vector< std::string > serverName;
+        std::map< const unsigned short, const std::string > errorPages;
+        std::vector< t_location > locations;
 } t_serv;
 
 // Singleton
-typedef struct s_data
-{
-	std::vector< t_serv > servList;
-	std::map< const std::string, std::string > cgiData;
-	std::map< const short, const std::string > codes;
-	std::map< const std::string, const std::string > MIMEtypes;
+typedef struct s_data {
+        std::vector< t_serv > servList;
+        std::map< const std::string, std::string > cgiData;
+        std::map< const short, const std::string > codes;
+        std::map< const std::string, const std::string > MIMEtypes;
 
-	std::vector< std::pair< const uint32_t, const uint16_t > > ip_port;
-	std::vector< std::pair< int, t_sockaddr_in > > sock_addr;
-	std::pair< std::vector< t_pollfd >, std::vector< std::pair< const int, t_timeval* > > > pollz;
-	std::vector< int > toKeep;
-	std::vector< std::pair< int, std::map< const std::string, std::string > > > headers;
-	std::vector< std::pair< int, std::vector< char > > > bodies;
-	bool exiting;
+        std::vector< std::pair< uint32_t, uint16_t > > ip_port;
+        std::vector< std::pair< int, t_sockaddr_in > > sock_addr;
+        std::pair< std::vector< t_pollfd >, std::vector< std::pair< int, t_timeval * > > > pollz;
+        std::vector< int > toKeep;
+        std::vector< std::pair< int, std::map< const std::string, std::string > > > headers;
+        std::vector< std::pair< int, std::vector< char > > > bodies;
+        bool exiting;
 } t_data;
 
 // --------------------------------------------------
 
-t_data* data(void);
+t_data *data(void);
 void handleSIG(const int signum);
-bool init(std::ifstream& config);
-short configError(const std::string& msg, const bool& useErrno, const short& ret);
-bool parseServ(std::ifstream& config, size_t& configLine);
-bool setupLoca(std::ifstream& config, std::istringstream& stream, t_serv* servPtr,
-			   t_location* locaPtr, size_t& configLine);
-t_location initLoca(const std::string& name);
-bool maxBodySizeIsHere(int& maxBodySize, std::istringstream& stream, std::string& word,
-					   const std::string& keywords, const std::ostringstream& lineIndex);
-int getmaxBodySize(std::string& size);
-long str2id(const std::string& str, const bool& check);
+bool init(std::ifstream &config);
+short configError(const std::string &msg, const bool &useErrno, const short &ret);
+bool parseServ(std::ifstream &config, size_t &configLine);
+bool setupLoca(std::ifstream &config, std::istringstream &stream, t_serv *servPtr, t_location *locaPtr, size_t &configLine);
+t_location initLoca(const std::string &name);
+bool maxBodySizeIsHere(int &maxBodySize, std::istringstream &stream, std::string &word, const std::string &keywords, const std::ostringstream &lineIndex);
+int getmaxBodySize(std::string &size);
+long str2id(const std::string &str, const bool &check);
 void printConfig(void);
-bool setup(const size_t& x, const bool& reUP);
+bool setup(const size_t &x, const bool &reUP);
 bool serv(void);
-bool read2socket(const size_t& x, const int& id, size_t& servIndex, t_location& location,
-				 std::string& serverName);
-short isValidPath(const std::string& path);
-bool sendDefaultError(const int& id, const unsigned short& codeRef, const std::string& message,
-					  const int& socket);
-bool sendError(const int& id, unsigned short codeRef, const std::string& message, const int& socket,
-			   t_serv& serv);
-bool redirect(std::string& answ, std::pair< short, std::string > redir,
-			  const std::map< const std::string, std::string >::iterator& URI);
-bool ftGet(const int& id, t_serv& serv, t_location& location, std::string& answ, const int& socket,
-		   const std::pair< const uint32_t, const uint16_t >& ip_port,
-		   const std::string& serverName);
-bool ftPost(const int& id, t_serv& serv, t_location& location, std::string& answ, const int& socket,
-			const std::pair< const uint32_t, const uint16_t >& ip_port,
-			const std::string& serverName, const bool& chunked);
-bool ftDelete(const int& id, t_location& location, std::string& answ, const int& socket);
-std::string createAnsw(const std::string& body, const unsigned short& codeRef,
-					   const std::string& message, const std::string& contentType,
-					   const std::string& redirect);
-bool fillBody(const int& id, std::string& type, const std::string& path, t_serv& serv,
-			  std::string& answ, const int& socket);
-bool runCGI(const int& id, t_serv& serv, t_location& location, std::string& answ, const int& socket,
-			const std::pair< const uint32_t, const uint16_t >& ip_port,
-			const std::string& serverName);
-void keepNoMore(const int& socket);
+bool read2socket(const size_t &x, const int &id, size_t &servIndex, t_location &location, std::string &serverName);
+short isValidPath(const std::string &path);
+bool sendDefaultError(const int &id, const unsigned short &codeRef, const std::string &message, const int &socket);
+bool sendError(const int &id, unsigned short codeRef, const std::string &message, const int &socket, t_serv &serv);
+bool redirect(std::string &answ, std::pair< short, std::string > redir, const std::map< const std::string, std::string >::iterator &URI);
+bool ftGet(const int &id, t_serv &serv, t_location &location, std::string &answ, const int &socket, const std::pair< uint32_t, uint16_t > &ip_port, const std::string &serverName);
+bool ftPost(const int &id, t_serv &serv, t_location &location, std::string &answ, const int &socket, const std::pair< uint32_t, uint16_t > &ip_port, const std::string &serverName, const bool &chunked);
+bool ftDelete(const int &id, t_location &location, std::string &answ, const int &socket);
+std::string createAnsw(const std::string &body, const unsigned short &codeRef, const std::string &message, const std::string &contentType, const std::string &redirect);
+bool fillBody(const int &id, std::string &type, const std::string &path, t_serv &serv, std::string &answ, const int &socket);
+bool runCGI(const int &id, t_serv &serv, t_location &location, std::string &answ, const int &socket, const std::pair< uint32_t, uint16_t > &ip_port, const std::string &serverName);
+void keepNoMore(const int &socket);
 
-namespace ft
-{
-void* memset(void* ptr, const short& value, const size_t& size);
-void memcpy(void* dest, void* src, const size_t& size);
-std::vector< std::string > split(const std::string& str, const char& delim);
-std::pair< std::string, std::string > psplit(const std::string& str, const char& delim);
-}
+namespace ft {
+void *memset(void *ptr, const short &value, const size_t &size);
+void memcpy(void *dest, void *src, const size_t &size);
+std::vector< std::string > split(const std::string &str, const char &delim);
+std::pair< std::string, std::string > psplit(const std::string &str, const char &delim);
+} // namespace ft
 
 // Codes retour-------------------------------------->>
 
