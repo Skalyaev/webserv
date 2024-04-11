@@ -7,7 +7,11 @@ bool ftDelete(const int &id, t_location &location, std::string &answ, const int 
         it = data()->headers[id].second.find("Root");
         std::string root;
         if (it == data()->headers[id].second.end())
-                root = "./www";
+        {
+                std::string home = getenv("HOME");
+                home += ROOT;
+                root = home;
+        }
         else
                 root = it->second;
 

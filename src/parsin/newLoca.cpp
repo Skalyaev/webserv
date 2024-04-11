@@ -110,9 +110,11 @@ bool parseNewLimit(std::ifstream &config, std::istringstream &stream, t_location
 
 // Init un bloc location
 t_location initLoca(const std::string &name) {
+        std::string home = getenv("HOME");
+        home += ROOT;
         t_location loca;
         loca.name = name;
-        loca.root = "./www";
+        loca.root = home;
         loca.autoIndex = false;
         loca.redirect = std::pair< short, std::string >(-1, std::string());
         loca.limitExcept["GET"] = std::vector< std::pair< uint32_t, bool > >();
@@ -156,7 +158,9 @@ bool rootIsHere(bool &rootFound, t_location &ref, std::istringstream &stream, st
                 return configError("[ ERROR ] rootIsHere() - " + keyword + " [" + lineIndex.str() + ']' + S_ERR_DUP, false, 0);
         if (!(stream >> word))
                 return configError("[ ERROR ] rootIsHere() - " + keyword + " [" + lineIndex.str() + ']' + S_ERR_NO_VAL, false, 0);
-        ref.root = "." + word;
+        std::string home = getenv("HOME");
+        home += ROOT;
+        ref.root = home + word;
         if (stream >> word)
                 return configError("[ ERROR ] rootIsHere() - " + keyword + " [" + lineIndex.str() + ']' + S_ERR_TM_VAL, false, 0);
         rootFound = true;
