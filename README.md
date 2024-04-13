@@ -17,7 +17,7 @@
 ## Stress test
 ![](https://github.com/Skalyaeve/images-1/blob/main/screenshot/webserv.png)
 
-## Installer
+## Install
 ```bash
 sudo apt update -y
 sudo apt install -y g++
@@ -35,7 +35,7 @@ link=Skalyaeve/webserv
 name=webserv
 
 git clone https://github.com/$link.git $name
-cd .. && make && make clean
+cd $name && make && make clean
 
 ln -s $PWD/$name $HOME/.local/bin/$name
 ln -s $PWD/src $HOME/.local/src/$name
@@ -44,20 +44,21 @@ ln -s $PWD/srv $HOME/.local/srv/$name
 ln -s $PWD/$name.conf $HOME/.config/$name.conf
 ```
 
-## Utiliser
+## Usage
 ```bash
 export PATH=$HOME/.local/bin:$PATH
 webserv <config>
 ```
 
-## Désinstaller
+## Uninstall
 ```bash
 name=webserv
 
-rm -r $name
+rm -rf $name
 rm $HOME/.local/bin/$name
 rm $HOME/.local/src/$name
 rm $HOME/.local/include/$name
 rm $HOME/.local/srv/$name
 rm $HOME/.config/$name.conf
 ```
+
