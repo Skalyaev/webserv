@@ -31,10 +31,9 @@ mkdir -p $HOME/.local/srv
 mkdir -p $HOME/.config
 ```
 ```bash
-link=Skalyaeve/webserv
 name=webserv
 
-git clone https://github.com/$link.git $name
+git clone https://github.com/Skalyaeve/$name.git
 cd $name && make && make clean
 
 ln -s $PWD/$name $HOME/.local/bin/$name
