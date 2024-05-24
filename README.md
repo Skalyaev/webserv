@@ -60,3 +60,4 @@ rm $HOME/.local/include/$name
 rm $HOME/.local/srv/$name
 rm $HOME/.config/$name.conf
 ```
+
