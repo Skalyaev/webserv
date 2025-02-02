@@ -1,9 +1,11 @@
 # <p align="center">webserv</p>
-> *Ce projet vous demandera d'écrire votre propre serveur HTTP. Vous devrez suivre la RFC d'HTTP et vous serez donc capable de tester avec un vrai navigateur web.*
+
+> _Ce projet vous demandera d'écrire votre propre serveur HTTP. Vous devrez suivre la RFC d'HTTP et vous serez donc capable de tester avec un vrai navigateur web._
 >
-> *HTTP est l'un des protocoles les plus utilisés sur Internet. Connaître son fonctionnement sera plus qu'utile même si vous ne travaillez pas sur le web à la fin.*
+> _HTTP est l'un des protocoles les plus utilisés sur Internet. Connaître son fonctionnement sera plus qu'utile même si vous ne travaillez pas sur le web à la fin._
 
 ## Checklist
+
 - [x] Config file parsing
 - [x] **`GET`**
 - [x] **`POST`**
@@ -15,14 +17,17 @@
 - [x] No crash
 
 ## Stress test
-![](https://github.com/Skalyaeve/images-1/blob/main/screenshot/webserv.png)
+
+![](https://github.com/Skalyaev/webserv/blob/main/preview.png)
 
 ## Install
+
 ```bash
 sudo apt update -y
 sudo apt install -y g++
 sudo apt install -y make
 ```
+
 ```bash
 mkdir -p $HOME/.local/bin
 mkdir -p $HOME/.local/src
@@ -30,6 +35,7 @@ mkdir -p $HOME/.local/include
 mkdir -p $HOME/.local/srv
 mkdir -p $HOME/.config
 ```
+
 ```bash
 name=webserv
 
@@ -44,12 +50,14 @@ ln -s $PWD/$name.conf $HOME/.config/$name.conf
 ```
 
 ## Usage
+
 ```bash
 export PATH=$HOME/.local/bin:$PATH
 webserv <config>
 ```
 
 ## Uninstall
+
 ```bash
 name=webserv
 
@@ -60,4 +68,3 @@ rm $HOME/.local/include/$name
 rm $HOME/.local/srv/$name
 rm $HOME/.config/$name.conf
 ```
-
